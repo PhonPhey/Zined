@@ -1,18 +1,18 @@
 extends KinematicBody2D
-
-var dir = 0
-var velocity = 0
+ 
+var input_direction = 0
+var direction = 0
+ 
 var speed = 0
-
-const MOVE_SPEED = 600
-const ACCEL = 1080
-const DECL = 2080
-
-
+const MAX_SPEED = 600
+const ACCELERATION = 1000
+const DECELERATION = 2000
+# Velocity is the X component of our motion vector.
+var velocity = 0
+ 
 func _ready():
-	set_process(true)
-	pass
-
+    set_process(true)
+ 
 func _process(delta):
     # INPUT
     # If the player pressed a key on the last tick,
