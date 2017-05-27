@@ -1,13 +1,27 @@
-[gd_scene load_steps=2 format=1]
+[gd_scene load_steps=5 format=1]
 
 [ext_resource path="res://scripts/player.gd" type="Script" id=1]
+[ext_resource path="res://data/sprt/sprt_osel/sprt_osel_0.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 10, 10 )
+
+[sub_resource type="RectangleShape2D" id=2]
+
+custom_solver_bias = 0.0
+extents = Vector2( 11.3562, 10 )
 
 [node name="World" type="Node"]
 
 [node name="Player" type="KinematicBody2D" parent="."]
 
-transform/pos = Vector2( 211.028, 167.315 )
+transform/pos = Vector2( 255.983, 169.001 )
 input/pickable = false
+shapes/0/shape = SubResource( 1 )
+shapes/0/transform = Matrix32( 1.865, 0, 0, 1.24002, 3.5882, -27.7536 )
+shapes/0/trigger = false
 collision/layers = 1
 collision/mask = 1
 collision/margin = 0.08
@@ -15,6 +29,38 @@ script/script = ExtResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="Player"]
 
-transform/pos = Vector2( 0.00655341, 0.00430143 )
+transform/pos = Vector2( 7.35748, -44.1012 )
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+
+transform/pos = Vector2( 3.5882, -27.7536 )
+transform/scale = Vector2( 1.865, 1.24002 )
+shape = SubResource( 1 )
+trigger = false
+_update_shape_index = 0
+
+[node name="Ground" type="Node2D" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Ground"]
+
+input/pickable = false
+shapes/0/shape = SubResource( 2 )
+shapes/0/transform = Matrix32( 14.7406, 0, 0, 1, 302.33, 166.053 )
+shapes/0/trigger = false
+collision/layers = 1
+collision/mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground/StaticBody2D"]
+
+transform/pos = Vector2( 302.33, 166.053 )
+transform/scale = Vector2( 14.7406, 1 )
+shape = SubResource( 2 )
+trigger = false
+_update_shape_index = 0
 
 

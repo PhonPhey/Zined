@@ -1,46 +1,60 @@
+
 extends KinematicBody2D
  
 var input_direction = 0
-var direction = 0
+var direction = 1
  
-var speed = 0
-const MAX_SPEED = 600
-const ACCELERATION = 1000
-const DECELERATION = 2000
-# Velocity is the X component of our motion vector.
-var velocity = 0
+var speed_x = 0
+var speed_y = 0
+
+const MAX_SPEED = 800
+const ACCELERATION = 2000
+const DECELERATION = 8000
+
+const JUMP_POWER = 400 
+const GRAVITY = 1600
+
+const MAX_JUMP_COUNT = 2
+
+var velocity = Vector2()
  
 func _ready():
     set_process(true)
+    set_process_input(true)
+ 
+ 
+func _input(event):
+    var move_left = event.is_action_pressed("move_left")
+    var move_right = event.is_action_pressed("move_right")
+    var stop_moving = not (Input.is_action_pressed("move_right") or Input.is_action_pressed("move_left"))
+    var jump = event.is_action_pressed("jump")
+   
+    if move_left:
+        input_direction = -1
+    if move_right:
+        input_direction = 1
+    if stop_moving:
+        input_direction = 0
+    if jump:
+	    speed_y = -JUMP_POWER
+	
+		
+   
+    if move_left or move_right and input_direction:
+        if input_direction == -1 * direction:
+            speed_x /= 3
+            direction = input_direction
+ 
  
 func _process(delta):
-    # INPUT
-    # If the player pressed a key on the last tick,
-    # We set the character's direction to the input
     if input_direction:
-        direction = input_direction
-   
-    if Input.is_action_pressed("ui_left"):
-        input_direction = -1
-    elif Input.is_action_pressed("ui_right"):
-        input_direction = 1
+        speed_x += ACCELERATION * delta
     else:
-        input_direction = 0
+        speed_x -= DECELERATION * delta
+    speed_x = clamp(speed_x, 0, MAX_SPEED)
+
+    speed_y += GRAVITY * delta
    
-   
-    # MOVEMENT
-    # If the player changed direction since last frame,
-    # it means the character will turn around.
-    # In that case, we lower the character's speed
-    if input_direction == - direction:
-        speed /= 3
- 
-    if input_direction:
-        speed += ACCELERATION * delta
-    else:
-        speed -= DECELERATION * delta
- 
-    speed = clamp(speed, 0, MAX_SPEED)
-   
-    velocity = speed * delta * direction
-    move(Vector2(velocity, 0))
+    velocity.x = speed_x * delta * direction
+    velocity.y = speed_y * delta
+    move(velocity)
