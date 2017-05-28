@@ -28,13 +28,19 @@ func _input(event):
  
  
 func _process(delta):
+    var move_left = Input.is_action_pressed("move_left")
+    var move_right = Input.is_action_pressed("move_right")
+    var jump =  Input.is_action_pressed("jump")
+    
     if input_direction:
         direction = input_direction
    
-    if Input.is_action_pressed("move_left"):
+    if move_left:
         input_direction = -1
-    elif Input.is_action_pressed("move_right"):
+    elif move_right:
         input_direction = 1
+    elif jump and (move_left or move_right):
+        jump_count = 1
     else:
         input_direction = 0
    
@@ -47,6 +53,7 @@ func _process(delta):
     speed.x = clamp(speed.x, 0, MAX_SPEED)
    
     speed.y += GRAVITY * delta
+
    
     velocity = Vector2(speed.x * delta * direction, speed.y * delta)
     
@@ -57,5 +64,17 @@ func _process(delta):
         var normal = get_collision_normal()
         var final_movement = normal.slide(movement_remainder)
         speed = normal.slide(speed)
+        print(final_movement[1], speed)
+
+        if speed[1] != 0:
+            jump_count = 1
+        elif final_movement[1] != 0:
+            jump_count = 2
+        elif final_movement[1] == 0 and speed[0] == 600 and jump:
+            jump_count = 2
+        elif final_movement[1] == 0 and speed[0] == 0 and speed[1] == 0 and jump:
+            jump_count = 2
+        else:
+            jump_count = 0
+
         move(final_movement)
-        jump_count = 0
